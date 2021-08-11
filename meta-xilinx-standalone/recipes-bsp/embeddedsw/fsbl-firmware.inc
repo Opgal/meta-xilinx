@@ -55,7 +55,7 @@ PACKAGES = ""
 # This is the default in most BSPs.  A MACHINE.conf can override this!
 FSBL_IMAGE_NAME ??= "fsbl"
 
-inherit image-artifact-names
+# inherit image-artifact-names
 
 FSBL_BASE_NAME ?= "${FSBL_IMAGE_NAME}-${PKGE}-${PKGV}-${PKGR}-${MACHINE}${IMAGE_VERSION_SUFFIX}"
 

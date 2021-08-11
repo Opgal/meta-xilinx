@@ -65,7 +65,7 @@ PACKAGES = ""
 # This is the default in most BSPs.  A MACHINE.conf can override this!
 PLM_IMAGE_NAME ??= "plm-versal-mb"
 
-inherit image-artifact-names
+# inherit image-artifact-names
 
 PLM_BASE_NAME ?= "${PLM_IMAGE_NAME}-${PKGE}-${PKGV}-${PKGR}-${MACHINE}${IMAGE_VERSION_SUFFIX}"
 

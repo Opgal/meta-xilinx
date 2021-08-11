@@ -65,7 +65,7 @@ PACKAGES = ""
 # This is the default in most BSPs.  A MACHINE.conf can override this!
 PSM_FIRMWARE_IMAGE_NAME ??= "psm-firmware-versal-mb"
 
-inherit image-artifact-names
+# inherit image-artifact-names
 
 PSM_FIRMWARE_BASE_NAME ?= "${PSM_FIRMWARE_IMAGE_NAME}-${PKGE}-${PKGV}-${PKGR}-${MACHINE}${IMAGE_VERSION_SUFFIX}"
 

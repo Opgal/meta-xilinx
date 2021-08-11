@@ -58,7 +58,7 @@ FALLBACK_ARCH_zynqmp-dr = "${SOC_VARIANT_ARCH}"
 BOARDVARIANT_ARCH ??= "${FALLBACK_ARCH}"
 PACKAGE_ARCH = "${BOARDVARIANT_ARCH}"
 
-inherit image-artifact-names
+# inherit image-artifact-names
 UENV_TEXTFILE ?= "uEnv.txt"
 UENV_MMC_OFFSET_zynqmp ?= "0x200000"
 UENV_MMC_OFFSET_zynq ?= "0x2080000"
