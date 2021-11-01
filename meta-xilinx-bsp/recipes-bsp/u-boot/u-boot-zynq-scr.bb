@@ -47,22 +47,20 @@ SRC_URI = " \
             file://pxeboot.pxe \
             "
 
-# We fall back to MACHINE_ARCH in most cases
-FALLBACK_ARCH = "${MACHINE_ARCH}"
-
-# Except on zynqmp-dr, where we need to fall back to SOC_VARIANT_ARCH, which
-# falls back to MACHINE_ARCH if necessary
-SOC_VARIANT_ARCH ??= "${MACHINE_ARCH}"
-FALLBACK_ARCH_zynqmp-dr = "${SOC_VARIANT_ARCH}"
-
-BOARDVARIANT_ARCH ??= "${FALLBACK_ARCH}"
+# Specify a default in case boardvariant isn't available
+BOARDVARIANT_ARCH ??= "${MACHINE_ARCH}"
 PACKAGE_ARCH = "${BOARDVARIANT_ARCH}"
+
+# On zynqmp-dr, we know we're different so if BOARD is not defined, fall back
+# to the SOC_VARIANT_ARCH instead
+SOC_VARIANT_ARCH ??= "${MACHINE_ARCH}"
+PACKAGE_ARCH_zynqmp-dr = "${@['${BOARDVARIANT_ARCH}', '${SOC_VARIANT_ARCH}'][d.getVar('BOARDVARIANT_ARCH')==d.getVar('MACHINE_ARCH')]}"
 
 # inherit image-artifact-names
 UENV_TEXTFILE ?= "uEnv.txt"
 UENV_MMC_OFFSET_zynqmp ?= "0x200000"
 UENV_MMC_OFFSET_zynq ?= "0x2080000"
-UENV_MMC_OFFSET_versal ?= "0x80000"
+UENV_MMC_OFFSET_versal ?= "0x200000"
 UENV_MMC_OFFSET_microblaze ?= "0x0"
 
 UENV_MMC_LOAD_ADDRESS ?= "${@append_baseaddr(d,d.getVar('UENV_MMC_OFFSET'))}"
@@ -83,7 +81,7 @@ KERNEL_LOAD_ADDRESS ?= "${@append_baseaddr(d,d.getVar('KERNEL_OFFSET'))}"
 KERNEL_OFFSET_microblaze ?= "0x0"
 KERNEL_OFFSET_zynqmp ?= "0x200000"
 KERNEL_OFFSET_zynq ?= "0x2080000"
-KERNEL_OFFSET_versal ?= "0x80000"
+KERNEL_OFFSET_versal ?= "0x200000"
 
 KERNEL_IMAGE ?= "${KERNEL_IMAGETYPE}"
 
@@ -167,27 +165,6 @@ BITSTREAM_LOAD_ADDRESS ?= "0x100000"
 
 do_configure[noexec] = "1"
 do_install[noexec] = "1"
-
-python () {
-    baseaddr = d.getVar('DDR_BASEADDR') or "0x0"
-    if baseaddr == "0x0":
-        d.appendVar('PRE_BOOTENV','')
-    else:
-        soc_family = d.getVar('SOC_FAMILY') or ""
-        if soc_family == "zynqmp":
-            fdt_high = "0x10000000"
-        elif soc_family == "zynq":
-            fdt_high = "0x20000000"
-        elif soc_family == "versal":
-            fdt_high = "0x70000000"
-        else:
-            fdt_high = ""
-
-        if fdt_high:
-            basefdt_high = append_baseaddr(d,fdt_high)
-            bootenv = "setenv fdt_high " + basefdt_high
-            d.appendVar('PRE_BOOTENV',bootenv)
-}
 
 def append_baseaddr(d,offset):
     skip_append = d.getVar('SKIP_APPEND_BASEADDR') or ""

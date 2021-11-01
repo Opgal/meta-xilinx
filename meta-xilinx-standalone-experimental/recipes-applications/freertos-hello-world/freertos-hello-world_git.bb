@@ -1,12 +1,14 @@
-inherit esw deploy
+inherit esw deploy python3native
 
 ESW_COMPONENT_SRC = "/lib/sw_apps/freertos_hello_world/src/"
 
-DEPENDS += "dtc-native python3-dtc-native libxil xilstandalone xiltimer freertos10-xilinx device-tree"
+DEPENDS += "libxil xilstandalone freertos10-xilinx xiltimer"
 
 do_configure_prepend() {
     cd ${S}
-    nativepython3 ${S}/scripts/linker_gen.py -d ${DTBFILE} -o ${OECMAKE_SOURCEPATH}
+    lopper.py ${DTS_FILE} -- baremetallinker_xlnx.py ${ESW_MACHINE} ${S}/${ESW_COMPONENT_SRC}
+    install -m 0755 memory.ld ${S}/${ESW_COMPONENT_SRC}/
+    install -m 0755 *.cmake ${S}/${ESW_COMPONENT_SRC}/
 }
 
 do_install() {
@@ -15,8 +17,9 @@ do_install() {
     install -m 0755  ${B}/freertos_hello_world* ${D}/${base_libdir}/firmware
 }
 
-FREERTOS_HELLO_WORLD_BASE_NAME ?= "${BPN}-${PKGE}-${PKGV}-${PKGR}-${MACHINE}-${DATETIME}"
-FREERTOS_HELLO_WORLD_BASE_NAME[vardepsexclude] = "DATETIME"
+inherit image-artifact-names
+
+FREERTOS_HELLO_WORLD_BASE_NAME ?= "${BPN}-${PKGE}-${PKGV}-${PKGR}-${MACHINE}${IMAGE_VERSION_SUFFIX}"
 
 do_deploy() {
 

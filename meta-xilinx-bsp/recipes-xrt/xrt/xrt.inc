@@ -2,9 +2,9 @@ REPO ?= "git://github.com/Xilinx/XRT.git;protocol=https"
 BRANCHARG = "${@['nobranch=1', 'branch=${BRANCH}'][d.getVar('BRANCH', True) != '']}"
 SRC_URI = "${REPO};${BRANCHARG}"
 
-BRANCH= "2021.1"
-SRCREV= "0dc9f505a3a910dea96166db7b5df8530b9ae38e"
-PV = "202110.2.11.0"
+BRANCH= "2021.2"
+SRCREV= "2719b6027e185000fc49783171631db03fc0ef79"
+PV = "202120.2.12.0"
 
 
 

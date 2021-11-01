@@ -12,9 +12,6 @@ python () {
     # detect them and their names. This means that this recipe needs to depend
     # on those deployables just like the image recipe does.
     deploydeps = ["virtual/kernel"]
-    for i in (d.getVar("MACHINE_ESSENTIAL_EXTRA_RDEPENDS") or "").split():
-        if i != d.getVar("BPN"):
-            deploydeps.append(i)
     for i in (d.getVar("EXTRA_IMAGEDEPENDS") or "").split():
         if i != d.getVar("BPN"):
             deploydeps.append(i)
@@ -88,7 +85,7 @@ KERNEL_BOOTARGS_zynq = "earlyprintk console=ttyPS0,115200 root=/dev/mmcblk0p2 rw
 KERNEL_BOOTARGS_zynqmp = "earlycon clk_ignore_unused root=/dev/mmcblk${sdbootdev}p2 rw rootwait"
 
 KERNEL_LOAD_ADDRESS_zynq = "0x2080000"
-KERNEL_LOAD_ADDRESS_zynqmp = "0x80000"
+KERNEL_LOAD_ADDRESS_zynqmp = "0x200000"
 DEVICETREE_LOAD_ADDRESS_zynq = "0x2000000"
 DEVICETREE_LOAD_ADDRESS_zynqmp = "0x4000000"
 

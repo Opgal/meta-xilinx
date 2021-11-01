@@ -1,3 +1,13 @@
-inherit esw_examples
+inherit features_check
 
-ESW_COMPONENT_SRC = "/XilinxProcessorIPLib/drivers/ttcps/examples/"
+REQUIRED_DISTRO_FEATURES = "ttcps"
+
+inherit esw python3native
+
+DEPENDS += "xilstandalone "
+
+ESW_COMPONENT_SRC = "/XilinxProcessorIPLib/drivers/ttcps/src/"
+ESW_COMPONENT_NAME = "libttcps.a"
+
+addtask do_generate_driver_data before do_configure after do_prepare_recipe_sysroot
+do_prepare_recipe_sysroot[rdeptask] = "do_unpack"

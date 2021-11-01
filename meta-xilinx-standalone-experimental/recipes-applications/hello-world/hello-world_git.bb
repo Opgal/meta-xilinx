@@ -2,13 +2,15 @@ inherit esw deploy
 
 ESW_COMPONENT_SRC = "/lib/sw_apps/hello_world/src/"
 
-DEPENDS += "dtc-native python3-dtc-native libxil xiltimer device-tree"
+DEPENDS += "libxil xiltimer"
 
 inherit python3native
 
 do_configure_prepend() {
     cd ${S}
-    nativepython3 ${S}/scripts/linker_gen.py -d ${DTBFILE} -o ${OECMAKE_SOURCEPATH}
+    lopper.py ${DTS_FILE} -- baremetallinker_xlnx.py ${ESW_MACHINE} ${S}/${ESW_COMPONENT_SRC}
+    install -m 0755 memory.ld ${S}/${ESW_COMPONENT_SRC}/
+    install -m 0755 *.cmake ${S}/${ESW_COMPONENT_SRC}/
 }
 
 do_install() {
@@ -17,8 +19,12 @@ do_install() {
     install -m 0755  ${B}/hello_world* ${D}/${base_libdir}/firmware
 }
 
-HELLO_WORLD_BASE_NAME ?= "${BPN}-${PKGE}-${PKGV}-${PKGR}-${MACHINE}-${DATETIME}"
-HELLO_WORLD_BASE_NAME[vardepsexclude] = "DATETIME"
+inherit image-artifact-names
+
+HELLO_WORLD_BASE_NAME ?= "${BPN}-${PKGE}-${PKGV}-${PKGR}-${MACHINE}${IMAGE_VERSION_SUFFIX}"
+
+ESW_CUSTOM_LINKER_FILE ?= "None"
+EXTRA_OECMAKE = "-DCUSTOM_LINKER_FILE=${@d.getVar('ESW_CUSTOM_LINKER_FILE')}"
 
 do_deploy() {
 

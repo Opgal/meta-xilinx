@@ -7,11 +7,17 @@ COMPATIBLE_MACHINE = "none"
 COMPATIBLE_MACHINE_zynq = ".*"
 COMPATIBLE_MACHINE_zynqmp = ".*"
 
+# Specify a default in case boardvariant isn't available
+BOARDVARIANT_ARCH ??= "${MACHINE_ARCH}"
+PACKAGE_ARCH = "${BOARDVARIANT_ARCH}"
+
 S = "${WORKDIR}/git"
 
-B = "${S}/lib/sw_apps/undefined/src"
-B_zynq = "${S}/lib/sw_apps/zynq_fsbl/src"
-B_zynqmp = "${S}/lib/sw_apps/zynqmp_fsbl/src"
+APP_DIR = "undefined"
+APP_DIR_zynq = "zynq_fsbl"
+APP_DIR_zynqmp = "zynqmp_fsbl"
+
+B = "${S}/lib/sw_apps/${APP_DIR}/src"
 
 # The makefile does not handle parallelization
 PARALLEL_MAKE = "-j1"

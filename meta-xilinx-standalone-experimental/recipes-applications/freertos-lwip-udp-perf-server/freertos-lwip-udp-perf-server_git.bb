@@ -2,17 +2,20 @@ inherit esw deploy python3native
 
 ESW_COMPONENT_SRC = "/lib/sw_apps/freertos_lwip_udp_perf_server/src/"
 
-DEPENDS += "dtc-native python3-dtc-native libxil lwip xiltimer device-tree python3-pyyaml-native freertos10-xilinx"
+DEPENDS += "libxil lwip xiltimer freertos10-xilinx"
 
 do_configure_prepend() {
     cd ${S}
-    nativepython3 ${S}/scripts/linker_gen.py -d ${DTBFILE} -o ${OECMAKE_SOURCEPATH}
+    lopper.py ${DTS_FILE} -- baremetallinker_xlnx.py ${ESW_MACHINE} ${S}/${ESW_COMPONENT_SRC}
+    install -m 0755 memory.ld ${S}/${ESW_COMPONENT_SRC}/
+    install -m 0755 *.cmake ${S}/${ESW_COMPONENT_SRC}/
 }
 
 do_generate_app_data() {
     # This script should also not rely on relative paths and such
     cd ${S}
-    nativepython3 ${S}/scripts/lib_parser.py -d ${DTBFILE} -o ${OECMAKE_SOURCEPATH}
+    lopper.py ${DTS_FILE} -- bmcmake_metadata_xlnx.py ${ESW_MACHINE} ${S}/${ESW_COMPONENT_SRC} hwcmake_metadata ${S}
+    install -m 0755 *.cmake ${S}/${ESW_COMPONENT_SRC}/
 }
 addtask do_generate_app_data before do_configure after do_prepare_recipe_sysroot
 do_prepare_recipe_sysroot[rdeptask] = "do_unpack"
@@ -23,8 +26,9 @@ do_install() {
     install -m 0755  ${B}/freertos_lwip_udp_perf_server* ${D}/${base_libdir}/firmware
 }
 
-FREERTOS_LWIP_UDP_PERF_SERVER_BASE_NAME ?= "${BPN}-${PKGE}-${PKGV}-${PKGR}-${MACHINE}-${DATETIME}"
-FREERTOS_LWIP_UDP_PERF_SERVER_BASE_NAME[vardepsexclude] = "DATETIME"
+inherit image-artifact-names
+
+FREERTOS_LWIP_UDP_PERF_SERVER_BASE_NAME ?= "${BPN}-${PKGE}-${PKGV}-${PKGR}-${MACHINE}${IMAGE_VERSION_SUFFIX}"
 
 do_deploy() {
 
