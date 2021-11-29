@@ -3,7 +3,7 @@ DESCRIPTION = "Tool to subset a system device tree"
 SECTION = "bootloader"
 LICENSE = "BSD-3-Clause"
 
-RDEPENDS_${PN} += " \
+ORIGINAL_RDEPENDS_${PN} += " \
     python3-core \
     dtc \
     python3-dtc \
@@ -16,6 +16,20 @@ RDEPENDS_${PN} += " \
     python3-pyyaml \
     python3-humanfriendly \
 "
+
+RDEPENDS_${PN} += " \
+    python3-core \
+    dtc \
+    python3-dtc \
+    python3-flask \
+    python3-flask-restful \
+    python3-six \
+    python3-ruamel-yaml \
+    python3-anytree \
+    python3-pyyaml \
+    python3-humanfriendly \
+"
+
 
 SRC_URI = "git://github.com/devicetree-org/lopper.git;branch=v0.2021.x"
 

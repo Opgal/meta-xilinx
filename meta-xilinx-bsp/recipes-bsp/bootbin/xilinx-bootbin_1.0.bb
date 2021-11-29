@@ -146,7 +146,7 @@ do_install() {
     install -m 0644 ${B}/BOOT.bin ${D}/boot/BOOT.bin
 }
 
-inherit image-artifact-names
+#inherit image-artifact-names
 
 QEMUQSPI_BASE_NAME ?= "QEMU_qspi-${MACHINE}${IMAGE_VERSION_SUFFIX}"
 

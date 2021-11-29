@@ -9,7 +9,8 @@ LIC_FILES_CHKSUM = " \
 		file://${COMMON_LICENSE_DIR}/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6 \
 		"
 
-inherit devicetree image-artifact-names
+inherit devicetree
+#image-artifact-names
 
 #this way of going through SRC_URI is better but if dts is including other dtsis, need to add all of them to SRC_URI..
 #SRC_URI += "file://${SYSTEM_DTFILE}"
